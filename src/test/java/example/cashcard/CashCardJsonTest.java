@@ -21,11 +21,11 @@ public class CashCardJsonTest {
     @Autowired
     private JacksonTester<CashCard[]> jsonlist;
 
-    CashCard cashCards[] = Arrays.array(new CashCard(99L, 123.45),
-            new CashCard(100L, 1.00),
-            new CashCard(101L, 150.00));
+    CashCard cashCards[] = Arrays.array(new CashCard(99L, 123.45, "Antonio"),
+            new CashCard(100L, 1.00, "Adnan"),
+            new CashCard(101L, 150.00, "Ali"));
 
-    CashCard cashCard = new CashCard(99L, 123.45);
+    CashCard cashCard = new CashCard(99L, 123.45, "Antonio");
 
     @Test
     public void cashCardSerializationTest() throws IOException {
@@ -50,7 +50,8 @@ public class CashCardJsonTest {
         String expected = """
                 {
                 "id": 99,
-                "amount":123.45
+                "amount":123.45,
+                "owner": "Antonio"
                 }
                 """;
         assertThat(json.parse(expected)).isEqualTo(cashCard);
@@ -62,9 +63,9 @@ public class CashCardJsonTest {
     public void cashCardListDeserializationTest() throws IOException{
         String expected = """
                 [
-                  { "id": 99, "amount": 123.45 },
-                  { "id": 100, "amount": 1.0 },
-                  { "id": 101, "amount": 150.0 }
+                  { "id": 99, "amount": 123.45, "owner":"Antonio"},
+                  { "id": 100, "amount": 1.0 , "owner":"Adnan"},
+                  { "id": 101, "amount": 150.0, "owner":"Ali" }
                 ]
                 """;
 
