@@ -143,6 +143,10 @@ public class CashCardApplicationTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
+
+    /**
+     * UPDATE URI Testing
+     */
     @Test
     @DirtiesContext
     void shouldUpdateAnExistingCashCard(){
@@ -169,6 +173,9 @@ public class CashCardApplicationTests {
 //
 //    }
 
+    /**
+     *
+     */
     @Test
     void shouldNotUpdateACashCardThatDoesNotExist(){
         CashCard unknownCard = new CashCard(null, 99.99, null);
@@ -177,6 +184,48 @@ public class CashCardApplicationTests {
         .exchange("/cashcard/9999", HttpMethod.PUT, request, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
+    }
+
+    /**
+     * Delete HTTP Method Testing
+     */
+    @Test
+    @DirtiesContext
+    void shouldDeleteAnExistingCashCard(){
+//        ResponseEntity<Void> deleteResponse = restTemplate.delete("/cashcards/99", Void.class);
+        ResponseEntity<Void> deleteResponse = restTemplate.withBasicAuth("antonio", "123")
+                .exchange("/cashcards/99", HttpMethod.DELETE, null, Void.class);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Delete HTTP Method Testing
+     */
+    @Test
+    @DirtiesContext
+    void shouldReturnErrorWhenDeletingANonExistentCard(){
+//        ResponseEntity<Void> deleteResponse = restTemplate.delete("/cashcards/99", Void.class);
+        ResponseEntity<Void> deleteResponse = restTemplate.withBasicAuth("Antonio", "123")
+                .exchange("/cashcards/9999", HttpMethod.DELETE, null, Void.class);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+
+    @Test
+    @DirtiesContext
+    void shouldNotAllowDeletefForInvalidUsers(){
+//        ResponseEntity<Void> deleteResponse = restTemplate.delete("/cashcards/99", Void.class);
+        ResponseEntity<Void> deleteResponse = restTemplate.withBasicAuth("hank", "987")
+                .exchange("/cashcards/99", HttpMethod.DELETE, null, Void.class);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    @DirtiesContext
+    void shouldNotAllowDeletionOfCashCardsTheyDoNotOwn(){
+        ResponseEntity<Void> deleteResponse = restTemplate.withBasicAuth("Antonio", "123")
+                .exchange("/cashcards/101", HttpMethod.DELETE, null, Void.class);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
 }

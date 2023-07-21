@@ -29,6 +29,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Generates the user authentication for Spring
+     * @param passwordEncoder
+     * @return UserDetailsService
+     */
     @Bean
     public UserDetailsService testOnlyUsers(PasswordEncoder passwordEncoder){
         User.UserBuilder users = User.builder();
@@ -38,7 +43,10 @@ public class SecurityConfig {
         UserDetails hank = users.username("Hank").password(passwordEncoder.encode("987"))
                 .roles("NON-OWNER")
                 .build();
-        return new InMemoryUserDetailsManager(antonio, hank);
+        UserDetails kumar = users.username("kumar").password(passwordEncoder.encode("987"))
+                .roles("CARD-OWNER")
+                .build();
+        return new InMemoryUserDetailsManager(antonio, hank, kumar);
     }
 }
 
